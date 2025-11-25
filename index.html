@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weather App</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    transition: background 0.5s ease;
+}
+.main-box {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    width: 350px;
+}
+.title { color: white; margin-bottom: 10px; }
+.subtitle { color: white; font-weight: 500; margin-bottom: 20px; animation: fadeIn 2s ease; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.search-box { margin-bottom: 20px; }
+input {
+    width: 70%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+}
+.search-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #00c6ff;
+    cursor: pointer;
+    font-size: 18px;
+}
+.search-btn:hover {
+    transform: scale(1.1);
+    background-color: #0072ff;
+}
+.weather-card {
+    background: rgba(255,255,255,0.3);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    color: white;
+    text-align: center;
+}
+.hidden { display: none; }
+/* Square weather image box */
+.weather-icon {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 15px auto;
+    border-radius: 15px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+footer {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+}
+</style>
+</head>
+<body>
+<div class="main-box">
+    <h1 class="title">🌦 Weather App</h1>
+    <h2 class="subtitle">Enter a city and get the current weather instantly!</h2>
+    <div class="search-box">
+        <input id="cityInput" type="text" placeholder="Enter city name">
+        <button onclick="getWeather()" class="search-btn">🔍</button>
+    </div>
+    <div id="weatherCard" class="weather-card hidden">
+        <div id="weatherIcon" class="weather-icon"></div>
+        <h2 id="location"></h2>
+        <h3 id="description"></h3>
+        <p id="temp"></p>
+        <p id="humidity"></p>
+        <p id="wind"></p>
+    </div>
+</div>
+<footer>Made with ❤️ using OpenWeatherMap API</footer>
+<script>
+async function getWeather() {
+    const city = document.getElementById("cityInput").value.trim();
+    if (!city) return alert("Enter a city!");
+
+    try {
+        const response = await fetch(`/weather?city=${encodeURIComponent(city)}`);
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        document.getElementById("location").innerText = `${data.name}, ${data.sys.country}`;
+        document.getElementById("description").innerText = data.weather[0].description;
+        document.getElementById("temp").innerText = `🌡 Temperature: ${data.main.temp}°C`;
+        document.getElementById("humidity").innerText = `💧 Humidity: ${data.main.humidity}%`;
+        document.getElementById("wind").innerText = `💨 Wind: ${data.wind.speed} m/s`;
+
+        const weatherType = data.weather[0].main.toLowerCase();
+        let imgSrc = "images/default.jpg";
+        if (weatherType.includes("clear")) imgSrc = "images/sunny.jpg";
+        else if (weatherType.includes("cloud")) imgSrc = "images/cloudy.jpg";
+        else if (weatherType.includes("rain") || weatherType.includes("drizzle")) imgSrc = "images/rainy.jpg";
+        else if (weatherType.includes("snow")) imgSrc = "images/snow.jpg";
+        else if (weatherType.includes("thunderstorm")) imgSrc = "images/storm.jpg";
+        else if (weatherType.includes("mist") || weatherType.includes("fog") || weatherType.includes("haze")) imgSrc = "images/mist.jpg";
+
+        document.getElementById("weatherIcon").style.backgroundImage = `url('${imgSrc}')`;
+        document.getElementById("weatherCard").classList.remove("hidden");
+
+    } catch (err) {
+        alert("Error fetching weather");
+        console.error(err);
+    }
+}
+</script>
+</body>
+</html>
