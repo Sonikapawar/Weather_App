@@ -6,19 +6,16 @@ A simple weather web application built with Node.js, HTML and CSS. It fetches cu
 - Search current weather by city name
 - Displays temperature, weather description, humidity, wind speed, and an icon
 - Simple responsive UI built with HTML & CSS
-- Node.js backend to call the weather API securely (keeps API key out of client code)
+- Node.js backend to call the weather API securely
 
 ## Tech Stack
 - Frontend: HTML, CSS, Node js
 - Backend: Node.js 
 - Weather API: OpenWeatherMap 
 
-## Screenshots
-(Add screenshots here as needed)
-
 ## Prerequisites
 - Node.js 
 - npm 
-- An API key from a weather provider (e.g., OpenWeatherMap)
+- An API key from a weather provider 
 
 Get an OpenWeatherMap API key: https://openweathermap.org/api
